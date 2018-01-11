@@ -82,7 +82,7 @@ function setPage() {
             // seekCourse();
             return 1;
         } else {
-            sleep(1000);
+            sleep(500);
             setPage();
         }
     }, 300);
@@ -108,7 +108,7 @@ function seekCourse() {
         try {
             var x = a.document.getElementById("kcmcGrid").getElementsByTagName("input");
         } catch (err) {
-            sleep(1000);
+            sleep(500);
             seekCourse();
         }
         if (x.length > 15) {
@@ -126,7 +126,7 @@ function seekCourse() {
             }
             var b = a.document.getElementById("Button1");
             while (b == null) {
-                sleep(1000)
+                sleep(500)
             }
             b.click();
             finish = true;
@@ -137,6 +137,7 @@ function seekCourse() {
                 }
             }, 5000);
         } else {
+            sleep(500);
             seekCourse();
         }
     }, 300)
