@@ -1,0 +1,20 @@
+{
+    "manifest_version":2,
+    "version":"1.0",
+    "name":"test",
+    "description":"test",
+    "icons":{
+        "16":"images/icon16.png"
+    },
+    "content_scripts":[
+        {
+         "matches":["http://123.232.100.110:82/*","http://123.232.100.110/*","http://123.232.100.110:83/*","http://123.232.100.110:84/*","http://123.232.100.110:87/*","http://123.232.100.110:88/*","http://123.232.100.110:89/*","http://123.232.100.110:91/","http://123.232.100.110:90/*"],
+         "js":["js/content_script.js"],
+		  "run_at":"document_end"
+         }
+    ],
+	"background":{
+    //"page":"background.html",
+    //"scripts":["js/background.js"]
+}
+}
