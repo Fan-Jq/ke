@@ -96,7 +96,6 @@ function main() {
             }
         }, 1000)
     }
-
     function re2() {
         setTimeout(function () {
             a = document.getElementById("iframeautoheight").contentWindow;
