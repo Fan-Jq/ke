@@ -9,8 +9,9 @@ function sleep(numberMillis) {
     var exitTime = now.getTime() + numberMillis;
     while (true) {
         now = new Date();
-        if (now.getTime() > exitTime)
-            return;
+        if (now.getTime() > exitTime) {
+            return 1;
+        }
     }
 }
 function contain(arr, obj) {
@@ -70,101 +71,69 @@ function getElementbyinnerHTML(elements, content) {
         return 0;
     }
 }
-function setPage() {
-    setTimeout(function () {
-        var a = document.getElementById("iframeautoheight").contentWindow;
-        var x = a.document.getElementById("dpkcmcGrid_txtPageSize");
-        var y = a.document.getElementById("dpkcmcGrid_btnNextPage");
-
-        if (x != null) {
-            x.setAttribute("value", "100");
-            y.click();
-            // seekCourse();
-            return 1;
-        } else {
-            sleep(500);
-            setPage();
-        }
-    }, 300);
-}
-function getSelectedCourse() {
-    setTimeout(function () {
-        var a = document.getElementById("iframeautoheight").contentWindow;
-        if (a.document.getElementById("DataGrid2") != null) {
-            var selectedTable = a.document.getElementById("DataGrid2").getElementsByTagName("tr");
-            for (i = 1; i < selectedTable.length; i++) {
-                selectedCourse.push(selectedTable[i].getElementsByTagName("td")[0].innerHTML);
-            }
-        } else {
-            sleep(1000);
-            getSelectedCourse();
-        }
-    }, 300);
-}
-function seekCourse() {
+function main() {
+    sleep(2000);
+    getElementbyinnerHTML(document.getElementsByTagName("a"), "全校性选修课").click();
     var a = document.getElementById("iframeautoheight").contentWindow;
-    var avilableCourse = a.document.getElementsByTagName("a");
-    setTimeout(function () {
-        try {
-            var x = a.document.getElementById("kcmcGrid").getElementsByTagName("input");
-        } catch (err) {
-            sleep(500);
-            seekCourse();
-        }
-        if (x.length > 15) {
-            for (j = 0; j < idealCourse.length; j++) {
-                var result = getElementbyinnerHTML(avilableCourse, idealCourse[j].split("+")[0]);
-                if (result != 0) {
-                    var courseTime = result.parentNode.parentNode.getElementsByTagName("td")[4].getAttribute("title");
-                    if (courseTime == idealCourse[j].split("+")[1]) {
-                        if (!contain(selectedCourse, idealCourse[j].split("+")[0])) {
-                            var t = result.parentNode.parentNode.getElementsByTagName("input");
-                            t[0].setAttribute("checked", "checked");
+    var PageSize = a.document.getElementById("dpkcmcGrid_txtPageSize");
+    re();
+    function re() {
+        setTimeout(function () {
+            a = document.getElementById("iframeautoheight").contentWindow;
+            btnNextPage = a.document.getElementById("dpkcmcGrid_btnNextPage");
+            if (btnNextPage == null) {
+                re();
+            } else {
+                var PageSize = a.document.getElementById("dpkcmcGrid_txtPageSize");
+                var selectedTable = a.document.getElementById("DataGrid2").getElementsByTagName("tr");
+                for (i = 1; i < selectedTable.length; i++) {
+                    selectedCourse.push(selectedTable[i].getElementsByTagName("td")[0].innerHTML);
+                }
+                var btnNextPage = a.document.getElementById("dpkcmcGrid_btnNextPage");
+                PageSize.setAttribute("value", "100");
+                btnNextPage.click();
+                re2();
+            }
+        }, 1000)
+    }
+
+    function re2() {
+        setTimeout(function () {
+            a = document.getElementById("iframeautoheight").contentWindow;
+            btnNextPage = a.document.getElementById("dpkcmcGrid_btnNextPage");
+            if (a.document.getElementById("kcmcGrid") == null || a.document.getElementById("kcmcGrid").getElementsByTagName("input").length <= 15) {
+                re2();
+            } else {
+                var avilableCourse = a.document.getElementsByTagName("a");
+                var x = a.document.getElementById("kcmcGrid").getElementsByTagName("input");
+                for (j = 0; j < idealCourse.length; j++) {
+                    var result = getElementbyinnerHTML(avilableCourse, idealCourse[j].split("+")[0]);
+                    if (result != 0) {
+                        var courseTime = result.parentNode.parentNode.getElementsByTagName("td")[4].getAttribute("title");
+                        if (courseTime == idealCourse[j].split("+")[1]) {
+                            if (!contain(selectedCourse, idealCourse[j].split("+")[0])) {
+                                var t = result.parentNode.parentNode.getElementsByTagName("input");
+                                t[0].setAttribute("checked", "checked");
+                            }
                         }
                     }
                 }
-            }
-            var b = a.document.getElementById("Button1");
-            while (b == null) {
-                sleep(500)
-            }
-            b.click();
-            finish = true;
-            setTimeout(function re() {
-                if (finish) {
-                    finish = false;
-                    document.location.reload();
+                re3();
+                function re3() {
+                    setTimeout(function () {
+                        var b = a.document.getElementById("Button1");
+                        if (b == null) {
+                            re3();
+                        } else {
+                            b.click();
+                            setTimeout(function () {
+                                document.location.reload();
+                            }, 5000)
+                        }
+                    }, 1000)
                 }
-            }, 5000);
-        } else {
-            sleep(500);
-            seekCourse();
-        }
-    }, 300)
-}
-
-function main() {
-    getElementbyinnerHTML(document.getElementsByTagName("a"), "全校性选修课").click();
-    setPage();
-    getSelectedCourse();
-    seekCourse();
-
+            }
+        }, 1000)
+    }
 }
 main();
-/*try{
-          var b = a.document.getElementById("dpkcmcGrid_btnNextPage");
-      } catch (e) {
-          setTimeout(function () {
-              var b = a.document.getElementById("dpkcmcGrid_btnNextPage");
-          }, 2000)
-      }
-      while (b == null) {
-          setTimeout(function () { }, 1000);
-      }
-      b.click();
-      getSelectedCourse();
-      seekCourse();
-  }, 5000)
-} else {
-  seekCourse();
-}*/
